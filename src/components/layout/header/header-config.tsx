@@ -87,4 +87,11 @@ export const TRADERS_HUB_LINK_CONFIG = {
 // ];
 //
 // Empty by default for white-labeling
-export const MenuItems: MenuItemsConfig[] = [];
+expoexport const MenuItems: MenuItemsConfig[] = [
+    {
+        as: 'a',
+        href: 'https://app.deriv.com/dtrader?app_id=YOUR_APP_ID',
+        label: localize('Digits / DTrader'),
+    },
+];
+
