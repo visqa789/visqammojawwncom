@@ -1,3 +1,4 @@
+import { DigitAnalysis } from '../components/DigitAnalysis';
 import { lazy, Suspense } from 'react';
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router';
@@ -112,8 +113,13 @@ function App() {
 
         handleCallback();
     }, []);
-
-    return <RouterProvider router={router} />;
-}
+      return (
+    <>
+      <DigitAnalysis />
+      <RouterProvider router={router} />
+    </>
+  );
+};
 
 export default App;
+
