@@ -1,0 +1,80 @@
+import React, { useEffect, useState } from 'react';
+
+export const DigitAnalysis = () => {
+  const [counts, setCounts] = useState(Array(10).fill(0));
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const app_id = 1089;
+    const ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${app_id}`);
+    let ticksList = [];
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        ticks_history: "R_100",
+        adjust_start_time: 1,
+        count: 1000,
+        end: "latest",
+        start: 1,
+        style: "ticks",
+        subscribe: 1
+      }));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.msg_type === 'history') {
+        const prices = data.history.prices;
+        const pipSize = data.history.pip_size;
+        ticksList = prices.map(price => parseInt(price.toFixed(pipSize).slice(-1)));
+        updateStats(ticksList);
+      } else if (data.msg_type === 'tick') {
+        const quote = data.tick.quote;
+        const pipSize = data.tick.pip_size;
+        const lastDigit = parseInt(quote.toFixed(pipSize).slice(-1));
+        ticksList.push(lastDigit);
+        if (ticksList.length > 1000) ticksList.shift();
+        updateStats(ticksList);
+      }
+    };
+
+    const updateStats = (list) => {
+      const newCounts = Array(10).fill(0);
+      list.forEach(digit => newCounts[digit]++);
+      setCounts(newCounts);
+      setTotal(list.length);
+    };
+
+    return () => ws.close();
+  }, []);
+
+  const maxVal = Math.max(...counts);
+  const minVal = Math.min(...counts);
+
+  return (
+    <div style={{ background: '#fff', padding: '15px', borderRadius: '10px', textAlign: 'center', margin: '10px auto', maxWidth: '360px' }}>
+      <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Last 1000 ticks digit distribution</h4>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+        {counts.map((count, digit) => {
+          const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+          let bgColor = '#fff';
+          let textColor = '#333';
+
+          if (count === maxVal && total > 0) { bgColor = '#2e7d32'; textColor = '#fff'; }
+          else if (count === minVal && total > 0) { bgColor = '#d32f2f'; textColor = '#fff'; }
+
+          return (
+            <div key={digit} style={{
+              border: '2px solid #ddd', borderRadius: '50%', width: '50px', height: '50px',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              backgroundColor: bgColor, color: textColor, fontWeight: 'bold'
+            }}>
+              <span style={{ fontSize: '14px' }}>{digit}</span>
+              <span style={{ fontSize: '9px' }}>{percentage}%</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
