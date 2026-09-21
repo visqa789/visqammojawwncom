@@ -199,6 +199,15 @@ const AppContent = observer(() => {
                             <Main />
                             <BotBuilder />
                             <BotStopped />
+                            <div style={{ width: '100%', height: '80vh', marginTop: '20px' }}>
+  <iframe 
+    src="https://app.deriv.com/dtrader?app_id=YOUR_APP_ID" 
+    width="100%" 
+    height="100%" 
+    style={{ border: 'none', borderRadius: '8px' }}
+  />
+</div>
+
                             <TransactionDetailsModal />
                             <ToastContainer limit={3} draggable={false} />
                         </div>
