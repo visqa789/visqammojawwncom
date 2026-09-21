@@ -1,4 +1,7 @@
-// @ts-nocheck — vendored bot code with known upstream type gaps; see AGENTS.md
+
+// @ts-nocheck - vendored bot code with known upstream type gaps
+import React from 'react';
+import { DigitAnalysis } from '../DigitAnalysis';
 import React from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
@@ -14,7 +17,7 @@ import TradeAnimation from '@/components/trade-animation';
 import Transactions from '@/components/transactions';
 import { DBOT_TABS } from '@/constants/bot-contents';
 import { popover_zindex } from '@/constants/z-indexes';
-import { useStore } from '@/hooks/useStore';
+import { DigitAnalysis } from '../DigitAnalysis';
 import { Localize, localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import ThemedScrollbars from '../shared_ui/themed-scrollbars';
@@ -345,4 +348,5 @@ const RunPanel = observer(() => {
     );
 });
 
-export default RunPanel;
+export default <DigitAnalysis />
+;
